@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.chatlan.client.LoginController"
+           stylesheets="@style.css">
+
+    <VBox spacing="15" alignment="CENTER" styleClass="card" prefWidth="350">
+
+        <Label text="Connexion" styleClass="title"/>
+
+        <TextField fx:id="usernameField" promptText="Nom d'utilisateur"/>
+        <PasswordField fx:id="passwordField" promptText="Mot de passe"/>
+
+        <Button text="Se connecter"
+                styleClass="btn-primary"
+                onAction="#handleLogin"/>
+
+        <Button text="Créer un compte"
+                styleClass="btn-link"
+                onAction="#handleSignup"/>
+
+        <Label fx:id="messageLabel" styleClass="error"/>
+    </VBox>
+
+</StackPane>

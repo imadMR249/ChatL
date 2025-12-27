@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.chatlan.client.SignupController"
+           stylesheets="@style.css">
+
+    <VBox spacing="15" alignment="CENTER" styleClass="card" prefWidth="350">
+
+        <Label text="Inscription" styleClass="title"/>
+
+        <TextField fx:id="usernameField" promptText="Nom d'utilisateur"/>
+        <PasswordField fx:id="passwordField" promptText="Mot de passe"/>
+        <PasswordField fx:id="confirmPasswordField" promptText="Confirmer mot de passe"/>
+
+        <Button text="S'inscrire"
+                styleClass="btn-primary"
+                onAction="#handleSignup"/>
+
+        <Label fx:id="messageLabel" styleClass="error"/>
+    </VBox>
+
+</StackPane>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.chatlan.client.ChatController"
+      spacing="10" alignment="CENTER" style="-fx-padding: 10;">
+
+    <TextArea fx:id="chatArea" editable="false" prefHeight="300" prefWidth="500"/>
+    <HBox spacing="10">
+        <TextField fx:id="messageField" promptText="Votre message" onAction="#handleEnterPressed"/>
+        <Button fx:id="sendButton" text="Envoyer" onAction="#sendMessage"/>
+    </HBox>
+
+</VBox>
