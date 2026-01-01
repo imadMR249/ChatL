@@ -1,18 +1,37 @@
-.root {
-    -fx-font-family: "Segoe UI";
-}
-
-.users {
+/* Style général du VBox */
+.vbox {
+    -fx-background-color: #ECE5DD; /* fond gris clair type WhatsApp */
     -fx-padding: 10;
-    -fx-background-color: #f2f2f2;
-    -fx-pref-width: 200;
 }
 
+/* Style du TextArea (zone des messages) */
 .text-area {
-    -fx-font-size: 13px;
+    -fx-control-inner-background: #ECE5DD; /* fond gris clair */
+    -fx-font-size: 14px;
+    -fx-background-insets: 0;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: transparent;
+    -fx-padding: 10;
 }
 
+/* Style du TextField (zone de saisie) */
+.text-field {
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-padding: 5 10 5 10;
+    -fx-background-color: white;
+}
+
+/* Style du Button envoyer */
 .button {
-    -fx-background-color: #2a5298;
+    -fx-background-color: #25D366; /* vert WhatsApp */
     -fx-text-fill: white;
+    -fx-background-radius: 20;
+    -fx-padding: 5 15 5 15;
+}
+
+/* Changer la couleur du texte dans TextArea (optionnel) */
+.text-area .content {
+    -fx-fill: black;
 }

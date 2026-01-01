@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.chatlan.client.controller.PrivateChatController"
+      spacing="10"
+      prefWidth="400"
+      prefHeight="500"
+      style="-fx-padding:10;">
+
+    <Label text="Discussion privée" style="-fx-font-size:16; -fx-font-weight:bold"/>
+
+    <ScrollPane fx:id="scrollPane" fitToWidth="true" VBox.vgrow="ALWAYS">
+        <VBox fx:id="messagesBox" spacing="8"/>
+    </ScrollPane>
+
+    <HBox spacing="10">
+        <TextField fx:id="messageField" HBox.hgrow="ALWAYS" promptText="Écrire un message..."/>
+        <Button text="Envoyer" onAction="#sendPrivateMessage"/>
+    </HBox>
+
+</VBox>

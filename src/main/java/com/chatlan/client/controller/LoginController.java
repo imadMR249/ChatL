@@ -1,5 +1,6 @@
-package com.chatlan.client;
+package com.chatlan.client.controller;
 
+import com.chatlan.client.network.DatabaseConfig;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.control.PasswordField;
@@ -29,7 +30,7 @@ public class LoginController {
             return;
         }
 
-        try (Connection conn = DBUtil.getConnection()) {
+        try (Connection conn = DatabaseConfig.getConnection()) {
             String sql = "SELECT * FROM users WHERE username=? AND password=?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, username);
@@ -39,15 +40,12 @@ public class LoginController {
             if (rs.next()) {
                 messageLabel.setText("Connexion réussie !");
 
-                // Charger le FXML du chat
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/chatlan/client/view/chat.fxml"));
                 Parent root = loader.load();
 
-                // Récupérer le controller du chat et passer le username
                 ChatController chatController = loader.getController();
                 chatController.initChat(username);
 
-                // Changer la scène
                 Stage stage = (Stage) usernameField.getScene().getWindow();
                 stage.setScene(new Scene(root, 600, 400));
                 stage.setTitle("Chat LAN - " + username);

@@ -1,15 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.chatlan.client.ChatController"
-      spacing="10" alignment="CENTER" style="-fx-padding: 10;">
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.chatlan.client.controller.ChatController"
+            style="-fx-background-color:#f4f4f4;">
 
-    <TextArea fx:id="chatArea" editable="false" prefHeight="300" prefWidth="500"/>
-    <HBox spacing="10">
-        <TextField fx:id="messageField" promptText="Votre message" onAction="#handleEnterPressed"/>
-        <Button fx:id="sendButton" text="Envoyer" onAction="#sendMessage"/>
-    </HBox>
+    <!-- ====== Liste des utilisateurs connectés ====== -->
+    <left>
+        <VBox spacing="10" style="-fx-padding:10;">
+            <Label text="Utilisateurs connectés" style="-fx-font-weight:bold;"/>
+            <ListView fx:id="userList" prefWidth="180" onMouseClicked="#openPrivateChat"/>
+        </VBox>
+    </left>
 
-</VBox>
+    <!-- ====== Zone de chat ====== -->
+    <center>
+        <VBox spacing="10" style="-fx-padding:10;">
+            <Label text="Discussion de groupe" style="-fx-font-weight:bold;"/>
+
+            <TextArea fx:id="chatArea"
+                      editable="false"
+                      wrapText="true"
+                      prefHeight="350"/>
+
+            <HBox spacing="10">
+                <TextField fx:id="messageField"
+                           promptText="Écrire un message..."
+                           HBox.hgrow="ALWAYS"/>
+                <Button text="Envoyer"
+                        onAction="#sendMessage"/>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>

@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 
 <StackPane xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.chatlan.client.LoginController"
+           fx:controller="com.chatlan.client.controller.LoginController"
            stylesheets="@style.css">
 
     <VBox spacing="15" alignment="CENTER" styleClass="card" prefWidth="350">
