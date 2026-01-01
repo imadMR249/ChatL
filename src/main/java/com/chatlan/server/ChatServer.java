@@ -1,57 +1,70 @@
 package com.chatlan.server;
 
-import java.io.*;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ChatServer {
 
     private static final int PORT = 5000;
-    public static Set<ClientHandler> clients = Collections.synchronizedSet(new HashSet<>());
+
+    // Liste des clients connectés
+    private static final Set<ClientHandler> clients =
+            Collections.synchronizedSet(new HashSet<>());
 
     public static void main(String[] args) {
-        System.out.println("Serveur Chat LAN démarré sur le port " + PORT);
+        System.out.println("🟢 Serveur démarré sur le port " + PORT);
 
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             while (true) {
                 Socket socket = serverSocket.accept();
-
-                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-
-                String username = reader.readLine(); // username envoyé par ChatClient
-                if (username == null || username.trim().isEmpty()) {
-                    writer.println("Erreur : username invalide");
-                    socket.close();
-                    continue;
-                }
-
-                ClientHandler client = new ClientHandler(socket, username);
-                clients.add(client);
-                new Thread(client).start();
+                new ClientHandler(socket).start();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void broadcast(String message) {
-        for (ClientHandler client : clients) {
-            client.sendMessage(message);
-        }
+    // Ajouter un client et envoyer la liste mise à jour
+    public static void addClient(ClientHandler client) {
+        clients.add(client);
+        broadcast("JOIN:" + client.getUsername());
+        sendUserList();
     }
 
+    // Supprimer un client
     public static void removeClient(ClientHandler client) {
         clients.remove(client);
+        broadcast("LEFT:" + client.getUsername());
+        sendUserList();
     }
 
-    public static void listUsers() {
-        StringBuilder users = new StringBuilder("💻 Utilisateurs connectés : ");
+    // Diffuser un message de groupe
+    public static void broadcast(String message) {
         for (ClientHandler client : clients) {
-            users.append(client.getUsername()).append(", ");
+            client.send(message);
         }
-        if (users.length() > 25) users.setLength(users.length() - 2);
-        broadcast(users.toString());
+    }
+
+    // Envoyer un message privé
+    public static void sendPrivate(String to, String from, String message) {
+        for (ClientHandler client : clients) {
+            if (client.getUsername().equals(to)) {
+                client.send("PM:" + from + ":" + message);
+                break;
+            }
+        }
+    }
+
+    // Mettre à jour la liste des utilisateurs connectés
+    public static void sendUserList() {
+        String users = clients.stream()
+                .map(ClientHandler::getUsername)
+                .reduce((a, b) -> a + "," + b)
+                .orElse("");
+        broadcast("USERS:" + users);
     }
 }

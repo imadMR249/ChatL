@@ -3,64 +3,59 @@ package com.chatlan.server;
 import java.io.*;
 import java.net.Socket;
 
-public class ClientHandler implements Runnable {
+public class ClientHandler extends Thread {
 
-    private final Socket socket;       // 'final' conseillé
-    private final String username;     // 'final' conseillé
-    private BufferedReader reader;
-    private PrintWriter writer;
+    private final Socket socket;
+    private BufferedReader in;
+    private PrintWriter out;
+    private String username;
 
-    public ClientHandler(Socket socket, String username) {
+    public ClientHandler(Socket socket) {
         this.socket = socket;
-        this.username = username;
-
-        try {
-            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            writer = new PrintWriter(socket.getOutputStream(), true);
-
-            // Message de connexion automatique
-            ChatServer.broadcast("🟢 " + username + " connecté");
-            ChatServer.listUsers();
-
-        } catch (IOException e) {
-            System.err.println("Erreur lors de l'initialisation du client : " + e.getMessage());
-        }
-    }
-
-    @Override
-    public void run() {
-        String message;
-        try {
-            while ((message = reader.readLine()) != null) {
-                if (!message.trim().isEmpty()) {
-                    ChatServer.broadcast(username + " : " + message);
-                }
-            }
-        } catch (IOException e) {
-            System.err.println("Erreur lecture message client : " + e.getMessage());
-        } finally {
-            closeConnection();
-        }
-    }
-
-    public void sendMessage(String message) {
-        writer.println(message);
     }
 
     public String getUsername() {
         return username;
     }
 
-    private void closeConnection() {
+    public void send(String message) {
+        out.println(message);
+    }
+
+    @Override
+    public void run() {
         try {
-            if (reader != null) reader.close();
-            if (writer != null) writer.close();
-            if (socket != null && !socket.isClosed()) socket.close();
-            ChatServer.removeClient(this);
-            ChatServer.broadcast("🔴 " + username + " déconnecté");
-            ChatServer.listUsers();
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out = new PrintWriter(socket.getOutputStream(), true);
+
+            // Lire le nom d'utilisateur envoyé par le client
+            username = in.readLine();
+            System.out.println("✔ Connexion : " + username);
+
+            ChatServer.addClient(this);
+
+            String message;
+            while ((message = in.readLine()) != null) {
+
+                if (message.startsWith("PM:")) {
+                    // Format PM:destinataire:message
+                    String[] parts = message.split(":", 3);
+                    if (parts.length == 3) {
+                        ChatServer.sendPrivate(parts[1], username, parts[2]);
+                    }
+                } else {
+                    // Message de groupe
+                    ChatServer.broadcast("MSG:" + username + ":" + message);
+                }
+            }
+
         } catch (IOException e) {
-            System.err.println("Erreur fermeture connexion : " + e.getMessage());
+            System.out.println("❌ Déconnexion : " + username);
+        } finally {
+            ChatServer.removeClient(this);
+            try {
+                socket.close();
+            } catch (IOException ignored) {}
         }
     }
 }
